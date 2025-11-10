@@ -29,11 +29,12 @@ GreedySuperstring(S)
 ```
 
 library(Biostrings)
+# -------------------------------------------------------------------------------------------
+# Vypočítá délku nejdelšího překryvu (overlap) mezi sekvencemi.
+# seq1 První DNA sekvence (Biostrings::DNAString).
+# seq2 Druhá DNA sekvence (Biostrings::DNAString).
+# return Délka nejdelšího překryvu (integer).
 
-#' Vypočítá délku nejdelšího překryvu (overlap) mezi sekvencemi.
-#' @param seq1 První DNA sekvence (Biostrings::DNAString).
-#' @param seq2 Druhá DNA sekvence (Biostrings::DNAString).
-#' @return Délka nejdelšího překryvu (integer).
 Overlap <- function(seq1, seq2) {
   len1 <- length(seq1)
   len2 <- length(seq2)
@@ -50,9 +51,11 @@ Overlap <- function(seq1, seq2) {
   return(max_overlap)
 }
 
-#' Vytvoří matici překryvů pro sadu DNA sekvencí.
-#' @param S DNAStringSet objekt sekvencí (čtení).
-#' @return Matice (matrix) délek překryvů.
+# -------------------------------------------------------------------------------------------
+# Vytvoří matici překryvů pro sadu DNA sekvencí.
+# S DNAStringSet objekt sekvencí (čtení).
+# return Matice (matrix) délek překryvů.
+
 OverlapMatrix <- function(S) {
   n <- length(S)
   overlapMat <- matrix(0, nrow = n, ncol = n)
@@ -70,9 +73,24 @@ OverlapMatrix <- function(S) {
   return(overlapMat)
 }
 
-#' Sestaví Superstring pomocí hladového algoritmu (Greedy Shortest Common Superstring).
-#' @param S DNAStringSet objekt sekvencí (čtení).
-#' @return DNAStringSet objekt obsahující výsledný kontig (nebo kontigy).
+# -------------------------------------------------------------------------------------------
+# Sestaví Superstring pomocí hladového algoritmu (Greedy Shortest Common Superstring).
+# S DNAStringSet objekt sekvencí (čtení).
+# return DNAStringSet objekt obsahující výsledný kontig (nebo kontigy).
+
+```
+GreedySuperstring(S)
+1   while length of S > 1
+2     overlapMat <- OverlapMatrix(S)
+3     if max(overlapMat) = 0
+4       return S
+5     else
+6       seq1, seq2 ← Two sequences from S with the longest overlap
+7       Merge seq1 and seq2 and add the new sequence to S
+8       Remove seq1 and seq2 from S
+9   return S
+```
+
 GreedySuperstring <- function(S) {
   if (length(S) == 0) {
     return(DNAStringSet())
@@ -83,7 +101,7 @@ GreedySuperstring <- function(S) {
     names(S) <- paste0("seq", 1:length(S))
   }
   
-  # Hladová smyčka
+  # Smyčka
   while (length(S) > 1) {
     # Krok 2: Vytvoř OverlapMatrix
     overlapMat <- OverlapMatrix(S)
